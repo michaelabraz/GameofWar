@@ -7,19 +7,22 @@ import { GameCard } from "./gameCard.js";
 
 
 export class FullCardDeck {
-    constructor(deck) {
-        this.deck = deck || [];
+    constructor(cardSuits, cardSymbols) {
+        this.cardSuits = cardSuits || CARD_SUITS;
+        this.cardSymbols = cardSymbols || CARD_SYMBOLS;
+        this.deck = [];
+        this.makeDeck();
     }
 
-    makeDeck = (cardSuits, cardSymbols) => {
-        CARD_SYMBOLS.forEach((symbol,index) =>{
-        // iterating over each suit in the suit list
-            CARD_SUITS.forEach(suit => 
+    // this is the problem here : need to make the value go up with each suit/symbol combo card instead of just with each suit
+    makeDeck = () => {
+        this.cardSuits.forEach((suit) =>{
+        // iterat => {  }thisthis.suit.suit,tthis.symbol,this.numberValueing over each suit in the suit list
+            this.cardSymbols.forEach((symbol, index) => {
         // creating a new game card using suit, number, and assigning a value for game play so that even face cards have a value
-            this.deck.push( new GameCard(suit,symbol,index + 2))
-            )
+            this.deck.push( new GameCard(suit,symbol,index+2))
+        })
         })
     };
-
 
 }

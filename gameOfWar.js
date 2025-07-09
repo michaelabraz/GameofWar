@@ -1,78 +1,83 @@
 import { FullCardDeck } from "./cardDeck.js";
 import { Player } from "./player.js";
 
-class GameofWar {    
+
+class GameofWar {
     constructor() {
-        this.cardDeck = new FullCardDeck;
-        this.p1 =  new Player('p1');
-        this.p2 =  new Player('p2');
-        this.dealDeck;
+        this.p1 = new Player('Player 1');
+        this.p2 = new Player('Player 2');
+        this.gameDeck = new FullCardDeck;
     }
+
 
     getRandomCard = (deckLength) => {
         return Math.floor(Math.random() * deckLength);
     }
 
-    // selecting 26 random cards to add to player1's deck and then assigning the rest to player 2's deck
-    dealDeck = () => {
-        console.log("dealing the deck");
-        const dealDeck = this.cardDeck;
+// selecting 26 random cards to add to this.p1's deck
+    dealCards = () => {
+        console.log('Dealing the Deck.');
+        let dealDeck = this.gameDeck.deck;
         while (dealDeck.length > 26) {
-            let randomCardIndex = getRandomCard(dealDeck.length); 
-            this.p1.playerCards.push(dealDeck[randomCardIndex]);
-            dealDeck.splice(randomCardIndex,1);
-            };
-        this.p2.playerCards = [...dealDeck]
-    }
+        let randomCardIndex = this.getRandomCard(dealDeck.length); 
+        this.p1.playerCards.push({...dealDeck[randomCardIndex], playerOwner: 'Player 1'} );
+        dealDeck.splice(randomCardIndex,1);
+        };
+        this.p2.playerCards = dealDeck.map(card => {return {...card, playerOwner: 'Player 2'}});
+        console.log('p2Cards: ', JSON.stringify(this.p2.playerCards));
+    };
 
     playGame = () => {
-        // game play 
-
-        const p1Cards = this.p1.playerCards;
-        const p2Cards = this.p2.playerCards;
-        
+        console.log('Beginning the Game.')
+        let p1Cards = this.p1.playerCards;
+        let p2Cards = this.p2.playerCards;
         while (p1Cards.length && p2Cards.length > 0) {
-            let p1RandomCardIndex = getRandomCard(p1Cards.length); 
-            let p2RandomCardIndex = getRandomCard(p2Cards.length);
+    this.p1RandomCardIndex = this.getRandomCard(p1Cards.length); 
+    this.p2RandomCardIndex = this.getRandomCard(p2Cards.length);
+    let p1Card = p1Cards[this.p1RandomCardIndex];
+    let p2Card = p2Cards[this.p2RandomCardIndex];
 
-            let p1Card = p1Cards[p1RandomCardIndex];
-            let p2Card = p2Cards[p2RandomCardIndex];
+    let cardsPlayedStatement = `${this.p1.name}'s card is: ${p1Card.symbol} of ${p1Card.suit}.\n${this.p2.name}'s card is: ${p2Card.symbol} of ${p2Card.suit}.`;
 
-            console.log(`Player 1's card is: ${p1Card.symbol} of ${p1Card.suit}.`);
-            console.log(`Player 2's card is: ${p2Card.symbol} of ${p2Card.suit}.`);
+    // check for a tie
 
-            // check for a tie
+    if (Math.max(p1Card.numberValue == p2Card.numberValue)) {
+        console.log(`${cardsPlayedStatement}. \nThere was a tie, no one gets a point.`)
+    } else {
+        // console.log(`p1Card: ${JSON.stringify(p1Card)}, p2Card: ${JSON.stringify(p2Card)}`);
+        let winningCard = p1Card.numberValue > p2Card.numberValue ? p1Card : p2Card;
+        console.log(`${cardsPlayedStatement} \n${winningCard.playerOwner} wins with the battle ${winningCard.symbol} of ${winningCard.suit}.`)
 
-            if (Math.max(p1Card.numberValue == p2Card.numberValue)) {
-                console.log("There was a tie, no one gets a point.")
-            } else {
-
-                let winningCard = Math.max(p1Card.numberValue, p2Card.numberValue);
-                console.log("winningCard: ", winningCard)
-
-                if (Math.max(p1Card.numberValue > p2Card.numberValue)) {
-                    this.p1.points.updatePoints(1);
-                } else {
-                    this.p2.points.updatePoints(1);
-                }
-            }
-
-            this.p1.playerCards.splice(p1RandomCardIndex,1);
-            this.p2.playerCards.splice(p2RandomCardIndex,1);
+        if (Math.max(p1Card.numberValue > p2Card.numberValue)) {
+            this.p1.points++;
+        } else {
+            this.p2.points++;
         }
+    }
+
+    this.p1.playerCards.splice(this.p1RandomCardIndex,1);
+    this.p2.playerCards.splice(this.p2RandomCardIndex,1);
 };
 
-        declareWinner = () => {
-            const p1Points = this.p1.points;
-            const p2Points = this.p2.points;
-            if (Math.max(p1Points > p2Points)) {
-                console.log (`${this.p1.name} is the winner with a total of ${p1Points} and Player 2 lost with a total of ${p2Points}.`)
-            } else {
-                console.log (`Player 2 is the winner with a total of ${p2Points} and Player 1 lost with a total of ${p1Points}.`)
-            }
-        }
+// this statement will be printed at the end of the game regardless of winner
+let pointStatement = `${this.p1.name} has ${this.p1.points} points and ${this.p2.name} has ${this.p2.points} points.`
+
+// check for tie
+console.log(pointStatement);
+if (this.p1.points == this.p2.points) {
+    console.log(`${pointStatement} Evenly matched with a tie. Peace is restored.`)
+} 
+// if no tie check who the winner is
+else if (this.p1.points > this.p2.points) {
+        console.log(`${pointStatement} ${this.p1.name} wins the war!`)
+    }
+else { console.log(`${pointStatement} ${this.p2.name} wins the war!`)}
 }
 
-const game = new GameofWar;
-game.playGame;
-game.declareWinner;
+};
+
+const game = new GameofWar();
+console.log("🗡️ Welcome to the Game of War 🗡️" );
+game.dealCards();
+game.playGame();
+console.log(game);

@@ -3,5 +3,6 @@ export class GameCard {
         this.suit = suit;
         this.symbol = symbol;
         this.numberValue = numberValue;
+        this.playerOwner = '';
     }
 };
